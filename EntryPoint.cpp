@@ -3,6 +3,8 @@
 | Version 2, December 2004                                            |
 |                                                                     |
 | Copyright (C) 2013 Kévin Seroux <kevin.seroux@orange.fr>            |
+|                    Jéremy Robert <yro44@orange.fr>                  |
+|                    Tristan Lebreton <lebreton-tristan@orange.fr>    |
 |                                                                     |
 | Everyone is permitted to copy and distribute verbatim or modified   |
 | copies of this license document, and changing it is allowed as long |
@@ -14,41 +16,32 @@
 | 0. You just DO WHAT THE FUCK YOU WANT TO.                           |
 \-------------------------------------------------------------------*/
 
-#ifndef RTB_H
-#define RTB_H
-
-#include <Arduino.h>
-#include "SoftwareSerial.h"
+#include "RTB.h"
 #include "Engines.h"
+#include "MsTimer2.h"
 
-#define DEBUG
-#define BATTERY_UPDATE 5000
-#define BATTERY_TEST_PIN A5
-#define LED_PIN 13
-#define BAUD_RATE 9600
-
-class RTB
+void doPWM()
 {
-public:
-  RTB(Engines instance);
-#ifdef DEBUG
-  ~RTB();
-#endif 
-  void waitAcq();
-  void sync();
-private:
-  /* inline */ void transmitBatteryLevel();
-  /* inline */ void receiveDatas();
-
-  unsigned char _prevBatteryLevel, _batteryLevel;
-  unsigned long _prevBatteryUpdate;
   
-  Engines _enginesInstance;
-#ifdef DEBUG
-  SoftwareSerial* _bluetooth;
-  unsigned char _leftSpeedEngine;
-  unsigned char _rightSpeedEngine;
-#endif
-};
+}
 
-#endif
+void setup()
+{
+  Engines myEngines;
+  RTB myRTB(myEngines);
+  MsTimer2::set(18, doPWM);
+  MsTimer2::start();
+  
+  while(true)
+  {
+    myRTB.sync();
+  }
+}
+
+//We don't use loop() because setup() and loop() encourage us to use global variable, memory leaks, ...
+void loop() {}
+
+
+
+
+

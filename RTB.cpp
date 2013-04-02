@@ -16,8 +16,10 @@
 
 #include "RTB.h"
 
-RTB::RTB()
+RTB::RTB(Engines instance)
 {
+  _enginesInstance = instance;
+  
 #ifdef DEBUG
   _bluetooth = new SoftwareSerial(2,4);
   _bluetooth->begin(BAUD_RATE);
@@ -125,7 +127,7 @@ inline void RTB::receiveDatas()
         _leftSpeedEngine = _bluetooth->read();
         _rightSpeedEngine = _bluetooth->read();
 
-        setSpeedsEngines(_leftSpeedEngine, _rightSpeedEngine);
+        _enginesInstance.setSpeedsEngines(_leftSpeedEngine, _rightSpeedEngine);
 
         Serial.write("Speed of the golf cart : ");
         Serial.print(_leftSpeedEngine, DEC);
@@ -138,7 +140,7 @@ inline void RTB::receiveDatas()
       if(_bluetooth->find("\nDISCONNECT\r\n") == true)
       {
         Serial.write("DISCONNECTION\n");
-        setSpeedsEngines(0, 0);
+        _enginesInstance.setSpeedsEngines(0, 0);
         waitAcq();
       }
     }

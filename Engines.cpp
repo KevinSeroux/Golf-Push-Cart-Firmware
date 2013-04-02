@@ -2,7 +2,8 @@
 | DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE                         |
 | Version 2, December 2004                                            |
 |                                                                     |
-| Copyright (C) 2013 Jéremy Robert <yro44@orange.fr>                  |
+| Copyright (C) 2013 Kévin Seroux <kevin.seroux@orange.fr>            |
+|                    Jéremy Robert <yro44@orange.fr>                  |
 |                    Tristan Lebreton <lebreton-tristan@orange.fr>    |
 |                                                                     |
 | Everyone is permitted to copy and distribute verbatim or modified   |
@@ -15,7 +16,20 @@
 | 0. You just DO WHAT THE FUCK YOU WANT TO.                           |
 \-------------------------------------------------------------------*/
 
-void setSpeedsEngines(const char leftEngine, const char rightEngine)
+#include "Engines.h"
+
+inline void Engines::setSpeedsEngines(const char leftEngine, const char rightEngine)
 {
-	
+  _speedLeftEngine = leftEngine;
+  _speedRightEngine = rightEngine;
+}
+
+inline void Engines::setSpeedLeftEngine(const char leftEngine)
+{
+  _speedLeftEngine = leftEngine;
+}
+
+inline void Engines::setSpeedRightEngine(const char rightEngine)
+{
+  _speedRightEngine = rightEngine;
 }

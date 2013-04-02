@@ -16,23 +16,7 @@
 | 0. You just DO WHAT THE FUCK YOU WANT TO.                           |
 \-------------------------------------------------------------------*/
 
-#include "RTB.h"
-#include "Engines.h"
-#include "MsTimer2.h"
-
-RTB* myRTB;
-
-void setup()
-{
-  myRTB = new RTB;
-}
-
-void loop()
-{  
-  myRTB->sync();
-}
-
-
+  THIS FILE IS JUST USEFUL TO OPEN ALL THE SOURCES WITH THE ARDUINO IDE
 
 
 
