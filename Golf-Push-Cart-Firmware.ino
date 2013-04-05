@@ -16,7 +16,7 @@
 | 0. You just DO WHAT THE FUCK YOU WANT TO.                           |
 \-------------------------------------------------------------------*/
 
-  THIS FILE IS JUST USEFUL TO OPEN ALL THE SOURCES WITH THE ARDUINO IDE
+/*THIS FILE IS JUST USEFUL TO OPEN ALL THE SOURCES WITH THE ARDUINO IDE*/
 
 
 
