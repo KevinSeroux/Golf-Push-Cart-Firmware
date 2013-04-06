@@ -16,54 +16,6 @@
 | 0. You just DO WHAT THE FUCK YOU WANT TO.                           |
 \-------------------------------------------------------------------*/
 
-#ifndef ENGINES_H
-#define ENGINES_H
+#include "Engines.h"
 
-class Engines
-{
-  public:
-    Engines();
-    
-    inline void setSpeedsEngines(const char leftEngine, const char rightEngine)
-    {
-        _speedLeftEngine = leftEngine;
-        _speedRightEngine = rightEngine;
-    }
-    
-    inline void setSpeedLeftEngine(const char leftEngine)
-    {
-      _speedLeftEngine = leftEngine;
-    }
-    
-    inline void setSpeedRightEngine(const char rightEngine)
-    {
-      _speedRightEngine = rightEngine;
-    }
-    
-    inline const char getSpeedLeftEngine()
-    {
-      return _speedLeftEngine;
-    }
-    
-    inline const char getSpeedRightEngine()
-    {
-      return _speedRightEngine;
-    }
-    
-    inline void operator++(int)
-    {
-      _speedLeftEngine++;
-      _speedRightEngine++;
-    }
-    
-    inline void operator--(int)
-    {
-      _speedLeftEngine--;
-      _speedRightEngine--;
-    }
-  private:
-    char _speedLeftEngine;
-    char _speedRightEngine;
-};
-
-#endif
+Engines::Engines() : _speedLeftEngine(0), _speedRightEngine(0) {}
