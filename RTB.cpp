@@ -138,11 +138,9 @@ inline void RTB::receiveDatas()
     else
     {
       _enginesInstance.setSpeedsEngines(0, 0);
-      while(_bluetooth->find("DISCONNECT\r\n") == false)
-      {
-        Serial.write("DISCONNECTION\n");
-        waitAcq();
-      }
+      while(_bluetooth->find("DISCONNECT\r\n") == false);
+      Serial.write("DISCONNECTION\n");
+      waitAcq();
     }
   }
 #else
@@ -159,12 +157,10 @@ inline void RTB::receiveDatas()
         setSpeedsEngines(Serial.read(), Serial.read());
     }
     else
-    {        
-      if(Serial.find("\nDISCONNECT\r\n") == true)
-      {
-        setSpeedsEngines(0, 0);
-        waitAcq();
-      }
+    {
+      setSpeedsEngines(0, 0);
+      while(Serial.find("DISCONNECT\r\n") == false);
+      waitAcq();
     }
   }
 #endif
