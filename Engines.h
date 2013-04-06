@@ -22,9 +22,21 @@
 class Engines
 {
   public:
-    /* inline */ void setSpeedsEngines(const char leftEngine, const char rightEngine);
-    /* inline */ void setSpeedLeftEngine(const char leftEngine);
-    /* inline */ void setSpeedRightEngine(const char rightEngine);
+    inline void setSpeedsEngines(const char leftEngine, const char rightEngine)
+    {
+        _speedLeftEngine = leftEngine;
+        _speedRightEngine = rightEngine;
+    }
+    
+    inline void setSpeedLeftEngine(const char leftEngine)
+    {
+      _speedLeftEngine = leftEngine;
+    }
+    
+    inline void setSpeedRightEngine(const char rightEngine)
+    {
+      _speedRightEngine = rightEngine;
+    }
   private:
     char _speedLeftEngine;
     char _speedRightEngine;

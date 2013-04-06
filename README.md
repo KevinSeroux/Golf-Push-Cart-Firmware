@@ -5,14 +5,6 @@ This git contains the sources of a Golf Push Cart school's project.
 It is remote controlled via Android. The application is developped with AppInventor.
 The Firmware is developped with C++ with an Arduino Uno Board.
 
-Compilation Error
------------------
-
-```
-RTB.cpp:130: undefined reference to `Engines::setSpeedsEngines(char, char)'
-RTB.cpp:143: undefined reference to `Engines::setSpeedsEngines(char, char)'
-```
-
 Licensing
 ---------
 
