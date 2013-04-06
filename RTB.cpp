@@ -88,7 +88,6 @@ void RTB::sync()
     transmitBatteryLevel();
     _prevBatteryUpdate = millis();
 #ifdef DEBUG
-    //delay(500);
     digitalWrite(LED_PIN, LOW);
 #endif
   }

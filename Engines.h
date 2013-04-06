@@ -24,46 +24,47 @@ class Engines
   public:
     Engines();
     
-    inline void setSpeedsEngines(const char leftEngine, const char rightEngine)
+    inline void setSpeedsEngines(const char speedLeftEngine, const char speedRightEngine)
     {
-        _speedLeftEngine = leftEngine;
-        _speedRightEngine = rightEngine;
+        setSpeedLeftEngine(speedLeftEngine);
+        setSpeedRightEngine(speedRightEngine);
     }
     
-    inline void setSpeedLeftEngine(const char leftEngine)
+    inline void setSpeedLeftEngine(const char speedLeftEngine)
     {
-      _speedLeftEngine = leftEngine;
+      _timeHighLeftEngine = speedLeftEngine * 2000 / 255;
     }
     
-    inline void setSpeedRightEngine(const char rightEngine)
+    inline void setSpeedRightEngine(const char speedRightEngine)
     {
-      _speedRightEngine = rightEngine;
+      _timeHighRightEngine = speedRightEngine * 2000 / 255;
     }
     
-    inline const char getSpeedLeftEngine()
+    inline const unsigned short int getTimeHighLeftEngine()
     {
-      return _speedLeftEngine;
+      return _timeHighLeftEngine;
     }
     
-    inline const char getSpeedRightEngine()
+    inline const unsigned short int getTimeHighRightEngine()
     {
-      return _speedRightEngine;
+      return _timeHighRightEngine;
     }
     
     inline void operator++(int)
     {
-      _speedLeftEngine++;
-      _speedRightEngine++;
+      _timeHighLeftEngine++;
+      _timeHighRightEngine++;
     }
     
     inline void operator--(int)
     {
-      _speedLeftEngine--;
-      _speedRightEngine--;
+      _timeHighLeftEngine--;
+      _timeHighRightEngine--;
     }
   private:
-    char _speedLeftEngine;
-    char _speedRightEngine;
+    // It's not necessary to declare these variables as 'volatile' because the interrupt doesn't need to change their values
+    unsigned short int _timeHighLeftEngine;
+    unsigned short int _timeHighRightEngine;
 };
 
 #endif

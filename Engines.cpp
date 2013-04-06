@@ -18,4 +18,4 @@
 
 #include "Engines.h"
 
-Engines::Engines() : _speedLeftEngine(0), _speedRightEngine(0) {}
+Engines::Engines() : _timeHighLeftEngine(0), _timeHighRightEngine(0) {}

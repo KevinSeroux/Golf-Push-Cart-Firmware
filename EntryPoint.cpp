@@ -27,15 +27,44 @@
 #define RIGHT_ENGINE_PIN 13
 
 /* Exceptionaly, we use a global instance to solve the MsTimer2() problem.
-   But only because the program use this instance all the time, anyway */
+   But anyway, only because the program use this instance all the time */
 Engines myEngines;
 
-/* This function isn't in the Engines class because MsTimer2() don't support class (C++).
+/* This function isn't in the Engines class because MsTimer2() doesn't support class (C++).
    It is write in C */
-void doPWM() {}
+void doPWM()
+{  
+  if(myEngines.getTimeHighLeftEngine() > 0)
+    digitalWrite(LEFT_ENGINE_PIN, HIGH);
+  if(myEngines.getTimeHighRightEngine() > 0)
+    digitalWrite(RIGHT_ENGINE_PIN, HIGH);
+  
+  if(myEngines.getTimeHighLeftEngine() > myEngines.getTimeHighRightEngine())
+  {
+    register unsigned short int difference = myEngines.getTimeHighLeftEngine() - myEngines.getTimeHighRightEngine();
+    delay(myEngines.getTimeHighRightEngine() / 1000);
+    delayMicroseconds(myEngines.getTimeHighRightEngine() % 1000);
+    digitalWrite(RIGHT_ENGINE_PIN, LOW);
+    delay(difference / 1000);
+    delayMicroseconds(difference % 1000);
+    digitalWrite(LEFT_ENGINE_PIN, LOW);
+  }
+  else
+  {
+    register unsigned short int difference = myEngines.getTimeHighRightEngine() - myEngines.getTimeHighLeftEngine();
+    delay(myEngines.getTimeHighLeftEngine() / 1000);
+    delayMicroseconds(myEngines.getTimeHighLeftEngine() % 1000);
+    digitalWrite(LEFT_ENGINE_PIN, LOW);
+    delay(difference / 1000);
+    delayMicroseconds(difference % 1000);
+    digitalWrite(RIGHT_ENGINE_PIN, LOW);
+  }
+}
 
 void setup()
 {
+  pinMode(INCREASE_ENGINES_PIN, INPUT);
+  pinMode(DECREASE_ENGINES_PIN, INPUT);
   pinMode(LEFT_ENGINE_PIN, OUTPUT);
   pinMode(RIGHT_ENGINE_PIN, OUTPUT);
   
