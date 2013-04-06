@@ -30,7 +30,7 @@
 class RTB
 {
 public:
-  RTB(Engines instance);
+  RTB(Engines *const instance);
 #ifdef DEBUG
   ~RTB();
 #endif 
@@ -43,7 +43,7 @@ private:
   unsigned char _prevBatteryLevel, _batteryLevel;
   unsigned long _prevBatteryUpdate;
   
-  Engines _enginesInstance;
+  Engines* _enginesInstance;
 #ifdef DEBUG
   SoftwareSerial* _bluetooth;
   unsigned char _leftSpeedEngine;

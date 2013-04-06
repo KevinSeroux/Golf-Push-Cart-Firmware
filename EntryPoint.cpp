@@ -28,7 +28,7 @@ void doPWM()
 void setup()
 {
   Engines myEngines;
-  RTB myRTB(myEngines);
+  RTB myRTB(&myEngines);
   MsTimer2::set(18, doPWM);
   MsTimer2::start();
   
