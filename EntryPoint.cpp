@@ -16,9 +16,7 @@
 | 0. You just DO WHAT THE FUCK YOU WANT TO.                           |
 \-------------------------------------------------------------------*/
 
-#include <new.h>
 #include "RTB.h"
-#include "Engines.h"
 #include "MsTimer2.h"
 
 #define BUTTON_MODE_PIN 9
@@ -27,44 +25,62 @@
 #define LEFT_ENGINE_PIN 12
 #define RIGHT_ENGINE_PIN 13
 
-/* Exceptionaly, we use a global instance to solve the MsTimer2() problem.
-   But anyway, only because the program use this instance all the time */
-Engines myEngines;
+float timeHighLeftEngine;
+float timeHighRightEngine;
+float difference;
 
-/* This function isn't in the Engines class because MsTimer2() doesn't support class (C++).
-   It is write in C */
 void doPWM()
 {  
-  if(myEngines.getTimeHighLeftEngine() > 0)
+  if(timeHighLeftEngine == timeHighRightEngine)
+  {
+    if(timeHighLeftEngine > 0)
+    {
+      digitalWrite(LEFT_ENGINE_PIN, HIGH);
+      digitalWrite(RIGHT_ENGINE_PIN, HIGH);
+      
+      delay(timeHighLeftEngine / 1000);
+      delayMicroseconds(static_cast<unsigned int>(timeHighLeftEngine) % 1000);
+      
+      digitalWrite(LEFT_ENGINE_PIN, LOW);
+      digitalWrite(RIGHT_ENGINE_PIN, LOW);
+    }
+  }
+  else if(timeHighLeftEngine > timeHighRightEngine)
+  {
     digitalWrite(LEFT_ENGINE_PIN, HIGH);
-  if(myEngines.getTimeHighRightEngine() > 0)
+    if(timeHighRightEngine > 0)
+      digitalWrite(RIGHT_ENGINE_PIN, HIGH);
+      
+    delay(timeHighRightEngine / 1000);
+    delayMicroseconds(static_cast<unsigned int>(timeHighRightEngine) % 1000);
+    
+    if(timeHighRightEngine > 0)
+      digitalWrite(RIGHT_ENGINE_PIN, LOW);
+    
+    difference = timeHighLeftEngine - timeHighRightEngine;
+    
+    delay(difference / 1000);
+    delayMicroseconds(static_cast<unsigned int>(difference) % 1000);
+    
+    digitalWrite(LEFT_ENGINE_PIN, LOW);
+  }
+  else //If timeHighRightEngine > timeHighLeftEngine
+  {
+    if(timeHighLeftEngine > 0)
+      digitalWrite(LEFT_ENGINE_PIN, HIGH);
     digitalWrite(RIGHT_ENGINE_PIN, HIGH);
-  
-  if(myEngines.getTimeHighLeftEngine() == myEngines.getTimeHighRightEngine())
-  {
-    delay(myEngines.getTimeHighLeftEngine() / 1000);
-    delayMicroseconds(myEngines.getTimeHighLeftEngine() % 1000);
-    digitalWrite(LEFT_ENGINE_PIN, LOW);
-    digitalWrite(RIGHT_ENGINE_PIN, LOW);
-  }
-  else if(myEngines.getTimeHighLeftEngine() > myEngines.getTimeHighRightEngine())
-  {
-    register unsigned short int difference = myEngines.getTimeHighLeftEngine() - myEngines.getTimeHighRightEngine();
-    delay(myEngines.getTimeHighRightEngine() / 1000);
-    delayMicroseconds(myEngines.getTimeHighRightEngine() % 1000);
-    digitalWrite(RIGHT_ENGINE_PIN, LOW);
+    
+    delay(timeHighLeftEngine / 1000);
+    delayMicroseconds(static_cast<unsigned int>(timeHighLeftEngine) % 1000);
+    
+    if(timeHighLeftEngine > 0)
+      digitalWrite(LEFT_ENGINE_PIN, LOW);
+    
+    difference = timeHighRightEngine - timeHighLeftEngine;
+    
     delay(difference / 1000);
-    delayMicroseconds(difference % 1000);
-    digitalWrite(LEFT_ENGINE_PIN, LOW);
-  }
-  else
-  {
-    register unsigned short int difference = myEngines.getTimeHighRightEngine() - myEngines.getTimeHighLeftEngine();
-    delay(myEngines.getTimeHighLeftEngine() / 1000);
-    delayMicroseconds(myEngines.getTimeHighLeftEngine() % 1000);
-    digitalWrite(LEFT_ENGINE_PIN, LOW);
-    delay(difference / 1000);
-    delayMicroseconds(difference % 1000);
+    delayMicroseconds(static_cast<unsigned int>(difference) % 1000);
+    
     digitalWrite(RIGHT_ENGINE_PIN, LOW);
   }
 }
@@ -85,7 +101,7 @@ void setup()
     if(digitalRead(BUTTON_MODE_PIN) == 1)
     {
       if(myRTB == 0)
-        myRTB = new RTB(&myEngines);
+        myRTB = new RTB();
       else
       {
         delete myRTB;
@@ -96,9 +112,19 @@ void setup()
     if(myRTB != 0)
     {
       if(digitalRead(DECREASE_ENGINES_PIN) == 1)
-        myEngines++;
-      else if(digitalRead(INCREASE_ENGINES_PIN) == 1)
-        myEngines--;
+      {
+        if(timeHighLeftEngine < 1992.38f) //1992.38 -> 7.844 * 254
+          timeHighLeftEngine += 7.844f; //7.844 -> 2000 / 255
+        if(timeHighLeftEngine < 1992.38f)
+          timeHighRightEngine += 7.844f;
+      }
+      if(digitalRead(INCREASE_ENGINES_PIN) == 1)
+      {
+        if(timeHighLeftEngine > 7.844f)
+          timeHighLeftEngine -= 7.844f;
+        if(timeHighRightEngine > 7.844f)
+          timeHighRightEngine -= 7.844f;
+      }
     }
     else
       myRTB->sync();

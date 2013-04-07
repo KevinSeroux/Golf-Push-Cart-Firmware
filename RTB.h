@@ -19,18 +19,21 @@
 
 #include <Arduino.h>
 #include "SoftwareSerial.h"
-#include "Engines.h"
 
 #define DEBUG
 #define BATTERY_UPDATE 5000
 #define BATTERY_TEST_PIN A5
 #define LED_PIN 13
 #define BAUD_RATE 9600
+  
+extern float timeHighLeftEngine;
+extern float timeHighRightEngine;
+extern float difference;
 
 class RTB
 {
 public:
-  RTB(Engines *const instance);
+  RTB();
 #ifdef DEBUG
   ~RTB();
 #endif 
@@ -42,8 +45,6 @@ private:
 
   unsigned char _prevBatteryLevel, _batteryLevel;
   unsigned long _prevBatteryUpdate;
-  
-  Engines* _enginesInstance;
 #ifdef DEBUG
   SoftwareSerial* _bluetooth;
   unsigned char _leftSpeedEngine;
