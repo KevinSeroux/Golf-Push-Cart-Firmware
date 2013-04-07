@@ -27,7 +27,6 @@
 
 float timeHighLeftEngine;
 float timeHighRightEngine;
-float difference;
 
 void doPWM()
 {  
@@ -57,7 +56,7 @@ void doPWM()
     if(timeHighRightEngine > 0)
       digitalWrite(RIGHT_ENGINE_PIN, LOW);
     
-    difference = timeHighLeftEngine - timeHighRightEngine;
+    float difference = timeHighLeftEngine - timeHighRightEngine;
     
     delay(difference / 1000);
     delayMicroseconds(static_cast<unsigned int>(difference) % 1000);
@@ -76,7 +75,7 @@ void doPWM()
     if(timeHighLeftEngine > 0)
       digitalWrite(LEFT_ENGINE_PIN, LOW);
     
-    difference = timeHighRightEngine - timeHighLeftEngine;
+    float difference = timeHighRightEngine - timeHighLeftEngine;
     
     delay(difference / 1000);
     delayMicroseconds(static_cast<unsigned int>(difference) % 1000);

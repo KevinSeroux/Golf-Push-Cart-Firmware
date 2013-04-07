@@ -28,7 +28,6 @@
   
 extern float timeHighLeftEngine;
 extern float timeHighRightEngine;
-extern float difference;
 
 class RTB
 {
