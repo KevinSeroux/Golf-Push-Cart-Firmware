@@ -16,6 +16,7 @@
 | 0. You just DO WHAT THE FUCK YOU WANT TO.                           |
 \-------------------------------------------------------------------*/
 
+#include <new.h>
 #include "RTB.h"
 #include "Engines.h"
 #include "MsTimer2.h"
@@ -68,8 +69,7 @@ void setup()
   pinMode(LEFT_ENGINE_PIN, OUTPUT);
   pinMode(RIGHT_ENGINE_PIN, OUTPUT);
   
-  bool remoteMode = false;
-  RTB* myRTB;
+  RTB* myRTB = 0;
   MsTimer2::set(18, doPWM);
   MsTimer2::start();
   
@@ -77,19 +77,16 @@ void setup()
   {
     if(digitalRead(BUTTON_MODE_PIN) == 1)
     {
-      if(remoteMode == false)
-      {
+      if(myRTB == 0)
         myRTB = new RTB(&myEngines);
-        remoteMode = true;
-      }
       else
       {
         delete myRTB;
-        remoteMode = false;
+        myRTB = 0;
       }
     }
     
-    if(remoteMode = false)
+    if(myRTB != 0)
     {
       if(digitalRead(DECREASE_ENGINES_PIN) == 1)
         myEngines++;
