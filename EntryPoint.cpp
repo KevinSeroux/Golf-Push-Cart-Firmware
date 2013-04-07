@@ -40,7 +40,14 @@ void doPWM()
   if(myEngines.getTimeHighRightEngine() > 0)
     digitalWrite(RIGHT_ENGINE_PIN, HIGH);
   
-  if(myEngines.getTimeHighLeftEngine() > myEngines.getTimeHighRightEngine())
+  if(myEngines.getTimeHighLeftEngine() == myEngines.getTimeHighRightEngine())
+  {
+    delay(myEngines.getTimeHighLeftEngine() / 1000);
+    delayMicroseconds(myEngines.getTimeHighLeftEngine() % 1000);
+    digitalWrite(LEFT_ENGINE_PIN, LOW);
+    digitalWrite(RIGHT_ENGINE_PIN, LOW);
+  }
+  else if(myEngines.getTimeHighLeftEngine() > myEngines.getTimeHighRightEngine())
   {
     register unsigned short int difference = myEngines.getTimeHighLeftEngine() - myEngines.getTimeHighRightEngine();
     delay(myEngines.getTimeHighRightEngine() / 1000);
