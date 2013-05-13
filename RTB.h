@@ -18,6 +18,7 @@
 #define RTB_H
 
 #include <Arduino.h>
+#include "Servo.h"
 #include "SoftwareSerial.h"
 
 #define DEBUG
@@ -25,9 +26,10 @@
 #define BATTERY_TEST_PIN A5
 #define LED_PIN 13
 #define BAUD_RATE 9600
+#define STOP_SPEED 1500
   
-extern float timeHighLeftEngine;
-extern float timeHighRightEngine;
+extern Servo _leftEngine;
+extern Servo _rightEngine;
 
 class RTB
 {

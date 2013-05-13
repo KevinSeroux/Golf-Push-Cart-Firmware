@@ -16,73 +16,19 @@
 | 0. You just DO WHAT THE FUCK YOU WANT TO.                           |
 \-------------------------------------------------------------------*/
 
+#include "Servo.h"
 #include "RTB.h"
-#include "MsTimer2.h"
 
 #define BUTTON_MODE_PIN 9
 #define INCREASE_ENGINES_PIN 10
 #define DECREASE_ENGINES_PIN 11
-#define LEFT_ENGINE_PIN 12
-#define RIGHT_ENGINE_PIN 13
+#define LEFT_ENGINE_PIN 10
+#define RIGHT_ENGINE_PIN 11
 
-float timeHighLeftEngine;
-float timeHighRightEngine;
+Servo _leftEngine;
+Servo _rightEngine;
 
-void doPWM()
-{  
-  if(timeHighLeftEngine == timeHighRightEngine)
-  {
-    if(timeHighLeftEngine > 0)
-    {
-      digitalWrite(LEFT_ENGINE_PIN, HIGH);
-      digitalWrite(RIGHT_ENGINE_PIN, HIGH);
-      
-      delay(timeHighLeftEngine / 1000);
-      delayMicroseconds(static_cast<unsigned int>(timeHighLeftEngine) % 1000);
-      
-      digitalWrite(LEFT_ENGINE_PIN, LOW);
-      digitalWrite(RIGHT_ENGINE_PIN, LOW);
-    }
-  }
-  else if(timeHighLeftEngine > timeHighRightEngine)
-  {
-    digitalWrite(LEFT_ENGINE_PIN, HIGH);
-    if(timeHighRightEngine > 0)
-      digitalWrite(RIGHT_ENGINE_PIN, HIGH);
-      
-    delay(timeHighRightEngine / 1000);
-    delayMicroseconds(static_cast<unsigned int>(timeHighRightEngine) % 1000);
-    
-    if(timeHighRightEngine > 0)
-      digitalWrite(RIGHT_ENGINE_PIN, LOW);
-    
-    float difference = timeHighLeftEngine - timeHighRightEngine;
-    
-    delay(difference / 1000);
-    delayMicroseconds(static_cast<unsigned int>(difference) % 1000);
-    
-    digitalWrite(LEFT_ENGINE_PIN, LOW);
-  }
-  else //If timeHighRightEngine > timeHighLeftEngine
-  {
-    if(timeHighLeftEngine > 0)
-      digitalWrite(LEFT_ENGINE_PIN, HIGH);
-    digitalWrite(RIGHT_ENGINE_PIN, HIGH);
-    
-    delay(timeHighLeftEngine / 1000);
-    delayMicroseconds(static_cast<unsigned int>(timeHighLeftEngine) % 1000);
-    
-    if(timeHighLeftEngine > 0)
-      digitalWrite(LEFT_ENGINE_PIN, LOW);
-    
-    float difference = timeHighRightEngine - timeHighLeftEngine;
-    
-    delay(difference / 1000);
-    delayMicroseconds(static_cast<unsigned int>(difference) % 1000);
-    
-    digitalWrite(RIGHT_ENGINE_PIN, LOW);
-  }
-}
+float _currentSpeed = 1500; //For manual mode
 
 void setup()
 {
@@ -91,9 +37,10 @@ void setup()
   pinMode(LEFT_ENGINE_PIN, OUTPUT);
   pinMode(RIGHT_ENGINE_PIN, OUTPUT);
   
+  _leftEngine.attach(LEFT_ENGINE_PIN);
+  _rightEngine.attach(RIGHT_ENGINE_PIN);
+  
   RTB* myRTB = 0;
-  MsTimer2::set(18, doPWM);
-  MsTimer2::start();
   
   while(true)
   {
@@ -112,22 +59,28 @@ void setup()
     {
       if(digitalRead(DECREASE_ENGINES_PIN) == 1)
       {
-        if(timeHighLeftEngine < 1992.38f) //1992.38 -> 7.844 * 254
-          timeHighLeftEngine += 7.844f; //7.844 -> 2000 / 255
-        if(timeHighLeftEngine < 1992.38f)
-          timeHighRightEngine += 7.844f;
+        if(_currentSpeed <= 1496.251f)
+        {
+          _currentSpeed += 3.749f;
+          _leftEngine.write(_currentSpeed);
+          _rightEngine.write(_currentSpeed);
+        }
       }
       if(digitalRead(INCREASE_ENGINES_PIN) == 1)
       {
-        if(timeHighLeftEngine > 7.844f)
-          timeHighLeftEngine -= 7.844f;
-        if(timeHighRightEngine > 7.844f)
-          timeHighRightEngine -= 7.844f;
+        if(_currentSpeed >= 547.754f)
+        {
+          _currentSpeed -= 3.749f;
+          _leftEngine.write(_currentSpeed);
+          _rightEngine.write(_currentSpeed);
+        }
       }
     }
     else
       myRTB->sync();
   }
+  
+  delete myRTB;
 }
 
 //We don't use loop() because setup() and loop() encourage us to use global variable, memory leaks, ...

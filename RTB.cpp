@@ -67,7 +67,9 @@ void RTB::waitAcq()
   _bluetooth->flush(); //We clear
 
   while(_bluetooth->available() < 24); //Waiting "\r\nCONNECT 123456789012\r\n"
-  _bluetooth->flush();    
+  _bluetooth->flush();
+  
+  Serial.write("====================================\nCONNECTION\n====================================\n");
 #else
   Serial.flush(); //We clear
 
@@ -109,37 +111,35 @@ inline void RTB::transmitBatteryLevel()
 inline void RTB::receiveDatas()
 {
 #ifdef DEBUG
+  if(_bluetooth->available() > 1)
+  {
+    Serial.write("------------------------------------\n");
+    Serial.print(_bluetooth->available());
+    Serial.write("B available !\n");
+  }
+  
   if(_bluetooth->available() > 2)
   {
     if(_bluetooth->read() == 255)
     {
-      if(_bluetooth->available() > 4)
-      {
-        _bluetooth->read();
-        _bluetooth->read();
-        Serial.write("3B removed !\n");
-      }
-      else
-      {
-        _leftSpeedEngine = _bluetooth->read();
-        _rightSpeedEngine = _bluetooth->read();
+      _leftSpeedEngine = _bluetooth->read();
+      _rightSpeedEngine = _bluetooth->read();
         
-        timeHighLeftEngine = _leftSpeedEngine * 7.844f;
-        timeHighRightEngine = _rightSpeedEngine * 7.844f;
+      _leftEngine.write(-3.749f * _leftSpeedEngine + STOP_SPEED);
+      _rightEngine.write(-3.749f * _rightSpeedEngine + STOP_SPEED);
 
-        Serial.write("Speed of the golf cart : ");
-        Serial.print(_leftSpeedEngine, DEC);
-        Serial.write(" | ");
-        Serial.println(_rightSpeedEngine, DEC);
-      }
+      Serial.write("Speed of the golf cart : ");
+      Serial.print(-3.749f * _leftSpeedEngine + STOP_SPEED, 0);
+      Serial.write(" | ");
+      Serial.println(-3.749f * _rightSpeedEngine + STOP_SPEED, 0);
     }
     else
     {
-      timeHighLeftEngine = 0.0f;
-      timeHighRightEngine = 0.0f;
+      _leftEngine.write(STOP_SPEED);
+      _rightEngine.write(STOP_SPEED);
       
       while(_bluetooth->find("DISCONNECT\r\n") == false);
-      Serial.write("DISCONNECTION\n");
+      Serial.write("====================================\nDISCONNECTION\n====================================\n");
       waitAcq();
     }
   }
@@ -148,23 +148,15 @@ inline void RTB::receiveDatas()
   {
     if(Serial.read() == 255)
     {
-      if(Serial.available() > 4)
-      {
-        Serial.read();
-        Serial.read();
-      }
-      else
-      {
-        timeHighLeftEngine = Serial.read() * 7.844f;
-        timeHighRightEngine = Serial.read() * 7.844f;
-      }
+      _leftEngine.write(-3.749f * Serial.read() + STOP_SPEED);
+      _rightEngine.write(-3.749f * Serial.read() + STOP_SPEED);
     }
     else
     {
-      timeHighLeftEngine = 0.0f;
-      timeHighRightEngine = 0.0f;
+      _leftEngine.write(STOP_SPEED);
+      _rightEngine.write(STOP_SPEED);
       
-      while(Serial.find("DISCONNECT\r\n") == false);
+      while(_bluetooth->find("DISCONNECT\r\n") == false);
       waitAcq();
     }
   }
